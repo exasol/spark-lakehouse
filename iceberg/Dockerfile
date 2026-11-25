@@ -49,7 +49,7 @@ ARG SPARK_VERSION
 ARG IMAGE_BUILD_NUMBER
 ARG ICEBERG_VERSION=1.11.0
 
-LABEL org.opencontainers.image.title="exasol/spark-lakehouse" \
+LABEL org.opencontainers.image.title="exadockerci4/spark-lakehouse" \
       org.opencontainers.image.version="${SPARK_VERSION}-iceberg-${IMAGE_BUILD_NUMBER}" \
       org.opencontainers.image.description="Apache Spark ${SPARK_VERSION} with Iceberg ${ICEBERG_VERSION}, S3 and ADLS support" \
       org.opencontainers.image.base.name="docker.io/apache/spark:${SPARK_VERSION}" \

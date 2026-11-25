@@ -6,8 +6,8 @@ integration tests.
 
 | Image | Directory | Contents |
 |---|---|---|
-| `exasol/spark-lakehouse:<spark-version>-iceberg-<build-number>` | [`iceberg/`](iceberg) | Iceberg, S3, ADLS |
-| `exasol/spark-lakehouse:<spark-version>-delta-<build-number>` | [`delta/`](delta) | Delta Lake, S3 |
+| `exadockerci4/spark-lakehouse:<spark-version>-iceberg-<build-number>` | [`iceberg/`](iceberg) | Iceberg, S3, ADLS |
+| `exadockerci4/spark-lakehouse:<spark-version>-delta-<build-number>` | [`delta/`](delta) | Delta Lake, S3 |
 
 The packages and their versions are build arguments in each `Dockerfile`. Iceberg and Delta Lake have separate images
 because they depend on different versions of shared libraries.
@@ -28,7 +28,7 @@ Use the image like `apache/spark`, without `--packages`:
 
 ```yaml
 spark:
-  image: exasol/spark-lakehouse:<tag>
+  image: exadockerci4/spark-lakehouse:<tag>
   command:
     - /opt/spark/bin/spark-submit
     - --conf
@@ -44,7 +44,7 @@ From the repository root:
 
 ```bash
 for format in iceberg delta; do
-  docker build -t "exasol/spark-lakehouse:$(scripts/image-tag.sh "$format")" "$format"
+  docker build -t "exadockerci4/spark-lakehouse:$(scripts/image-tag.sh "$format")" "$format"
   scripts/smoke-test.sh "$format"
 done
 ```

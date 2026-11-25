@@ -45,7 +45,7 @@ jobs:
           persist-credentials: false
 
       - name: Determine image name
-        run: echo "IMAGE=exasol/spark-lakehouse:$(scripts/image-tag.sh "$FORMAT")" >> "$GITHUB_ENV"
+        run: echo "IMAGE=exadockerci4/spark-lakehouse:$(scripts/image-tag.sh "$FORMAT")" >> "$GITHUB_ENV"
 
       - name: Enable the containerd image store for multi-platform images
         run: |

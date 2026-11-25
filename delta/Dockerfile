@@ -38,7 +38,7 @@ ARG SPARK_VERSION
 ARG IMAGE_BUILD_NUMBER
 ARG DELTA_VERSION=4.2.0
 
-LABEL org.opencontainers.image.title="exasol/spark-lakehouse" \
+LABEL org.opencontainers.image.title="exadockerci4/spark-lakehouse" \
       org.opencontainers.image.version="${SPARK_VERSION}-delta-${IMAGE_BUILD_NUMBER}" \
       org.opencontainers.image.description="Apache Spark ${SPARK_VERSION} with Delta Lake ${DELTA_VERSION} and S3 support" \
       org.opencontainers.image.base.name="docker.io/apache/spark:${SPARK_VERSION}" \

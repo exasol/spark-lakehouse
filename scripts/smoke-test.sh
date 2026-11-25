@@ -4,7 +4,7 @@
 set -euo pipefail
 
 readonly flavor="${1:?usage: $0 iceberg|delta [IMAGE]}"
-readonly image="${2:-exasol/spark-lakehouse:$("$(dirname "$0")/image-tag.sh" "$flavor")}"
+readonly image="${2:-exadockerci4/spark-lakehouse:$("$(dirname "$0")/image-tag.sh" "$flavor")}"
 
 case "$flavor" in
     iceberg)
