@@ -1,0 +1,68 @@
+# Builds the Spark images, smoke-tests them, and pushes them to Docker Hub from main.
+# Pushing requires the organization secrets CI4_DOCKERHUB_USERNAME and CI4_DOCKERHUB_TOKEN.
+name: Spark Images
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build spark ${{ matrix.format }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        format:
+          - iceberg
+          - delta
+    concurrency:
+      group: ${{ github.workflow }}-${{ matrix.format }}-${{ github.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    env:
+      FORMAT: ${{ matrix.format }}
+      PUSH: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Determine image name
+        run: echo "IMAGE=exadockerci4/spark-lakehouse:$(scripts/image-tag.sh "$FORMAT")" >> "$GITHUB_ENV"
+
+      - name: Enable the containerd image store for multi-platform images
+        run: |
+          config="$( (sudo cat /etc/docker/daemon.json 2> /dev/null || echo '{}') \
+              | jq '.features["containerd-snapshotter"] = true')"
+          echo "$config" | sudo tee /etc/docker/daemon.json
+          sudo systemctl restart docker
+          docker info --format '{{ json .DriverStatus }}' | grep --quiet io.containerd.snapshotter.v1
+
+      - name: Build image
+        run: docker build --platform linux/amd64,linux/arm64 --tag "$IMAGE" "$FORMAT"
+
+      - name: Smoke test
+        run: scripts/smoke-test.sh "$FORMAT" "$IMAGE"
+
+      - name: Login to Docker Hub
+        if: env.PUSH == 'true'
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.CI4_DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.CI4_DOCKERHUB_TOKEN }}
+        run: echo "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+
+      - name: Push image
+        if: env.PUSH == 'true'
+        run: |
+          if docker buildx imagetools inspect "$IMAGE" > /dev/null 2>&1; then
+            echo "::warning::$IMAGE is already published and is not overwritten. To publish this change, increase IMAGE_BUILD_NUMBER in $FORMAT/Dockerfile."
+          else
+            docker push "$IMAGE"
+          fi

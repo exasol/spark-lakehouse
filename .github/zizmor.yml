@@ -1,0 +1,8 @@
+# See https://docs.zizmor.sh/configuration/#settings
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # GitHub's own actions are well known, ref-pinning is acceptable
+        "actions/*": ref-pin
+        "*": hash-pin
