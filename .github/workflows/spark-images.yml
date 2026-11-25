@@ -5,17 +5,7 @@ on:
   push:
     branches:
       - main
-    paths:
-      - iceberg/**
-      - delta/**
-      - scripts/**
-      - .github/workflows/spark-images.yml
   pull_request:
-    paths:
-      - iceberg/**
-      - delta/**
-      - scripts/**
-      - .github/workflows/spark-images.yml
   workflow_dispatch:
 
 permissions: {}

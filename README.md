@@ -54,10 +54,9 @@ creates, modifies and queries a table with the image, without `--packages`.
 
 ## Publishing
 
-The [Spark Images workflow](.github/workflows/spark-images.yml) runs for pull requests and pushes to `main` that
-change an image or the scripts. It builds each image for `linux/amd64` and `linux/arm64`, runs the smoke test and, on
-`main` only, pushes the image to Docker Hub with the organization secrets `CI4_DOCKERHUB_USERNAME` and
-`CI4_DOCKERHUB_TOKEN`.
+The [Spark Images workflow](.github/workflows/spark-images.yml) runs for pull requests and pushes to `main`. It builds
+each image for `linux/amd64` and `linux/arm64`, runs the smoke test and, on `main` only, pushes the image to Docker Hub
+with the organization secrets `CI4_DOCKERHUB_USERNAME` and `CI4_DOCKERHUB_TOKEN`.
 
 An existing tag is never overwritten: the push is skipped with a warning.
 
